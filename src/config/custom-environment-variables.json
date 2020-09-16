@@ -1,3 +1,4 @@
 {
-    "jwtPrivateKey": "ops_jwtPrivateKey"
+    "jwtPrivateKey": "ops_jwtPrivateKey",
+    "db":"ops_db"
 }
