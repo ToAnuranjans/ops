@@ -6,6 +6,9 @@ const config = require('config');
 module.exports = () => {
 
     winston.exceptions.handle(new winston.transports.File({ filename: 'uncaughtExceptions.log' }));
+    
+    winston.add(new winston.transports.Console());
+
     winston.add(new winston.transports.File({
         filename: 'logfile.log'
     }))

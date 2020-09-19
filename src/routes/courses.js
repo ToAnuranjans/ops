@@ -1,7 +1,7 @@
 
 const path = require('path');
 const multer = require('multer');
-import express, { urlencoded } from 'express';
+import express from 'express';
 import auth from '../middleware/auth';
 import admin from '../middleware/admin';
 
@@ -10,10 +10,10 @@ const route = express.Router();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../public/images'));
+        cb(null, path.join(__dirname, '../../public/images'));
     },
     filename: (req, file, cb) => {
-        cb(null, 'OPS-' + new Date().toISOString() + path.extname(file.originalname));
+        cb(null, 'OPS-' + req.ops_id + path.extname(file.originalname));
     }
 });
 
@@ -35,15 +35,18 @@ route.get('/:id', (req, res) => {
     if (!course) return res.status(404).send(`No course found for id ${id}`);
     res.send(course);
 });
-
-route.post('/', [auth, admin], upload.single('fileAttachment'), (req, res) => {
+//[auth, admin] , upload.single('fileAttachment')
+route.post('/', assignId, upload.single('fileAttachment'), (req, res) => {
     const imageUrl = encodeURI(`${req.protocol}://${req.headers.host}/assets/images/${req.file.filename}`);
     const course = req.body;
-    return res.send({
-        imageUrl
-    });
+    const result = {
+        imageUrl,
+        id: req.ops_id,
+        ...course
+    };
+    console.log(result);
+    return res.send(result);
 });
-
 
 route.delete('/:id', (req, res) => {
     const id = req.params.id;
@@ -55,6 +58,11 @@ route.delete('/:id', (req, res) => {
     return res.send(course);
 
 });
+
+function assignId(req, res, next) {
+    req.ops_id = new Date().toISOString();
+    next();
+}
 
 
 module.exports = route;
