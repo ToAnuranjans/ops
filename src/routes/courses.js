@@ -25,18 +25,18 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter });
 
-route.get('/', (req, res) => {
-    res.send(courses);
+route.get('/', [auth], (req, res) => {
+    res.send([]);
 });
 
-route.get('/:id', (req, res) => {
+route.get('/:id', [auth], (req, res) => {
     const id = req.params.id;
-    const course = courses.find(c => c.id === +id);
+    const course = [].find(c => c.id === +id);
     if (!course) return res.status(404).send(`No course found for id ${id}`);
     res.send(course);
 });
 //[auth, admin] , upload.single('fileAttachment')
-route.post('/', assignId, upload.single('fileAttachment'), (req, res) => {
+route.post('/', [assignId], upload.single('fileAttachment'), (req, res) => {
     const imageUrl = encodeURI(`${req.protocol}://${req.headers.host}/assets/images/${req.file.filename}`);
     const course = req.body;
     const result = {
