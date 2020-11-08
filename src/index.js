@@ -15,7 +15,7 @@ app.use(cors());
 app.use(helmet());
 app.use(compression());
 
-
+//TODO 1
 
 require('./startup/db')();
 require('./startup/contents')(app);
